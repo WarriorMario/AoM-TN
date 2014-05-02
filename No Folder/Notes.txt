@@ -1,0 +1,57 @@
+Notes:
+We're not done balancing and bugfixing so some things are really OP right now.
+Loads of small things still are missing (Icons, Models, history etc...)
+The game might lag on slow/old pcs because some models are not optimised yet.
+The game might freeze for a few seconds, all you have to do is wait.
+
+We can't predict every problem so if you find one post it on rts sanctuary or pm me on voobly/GR (WarriorMario).
+
+Changes:
+V1.00 first version on voobly
+v1.01 Added the LOSless stage to prevent people from picking a major god after they see which map it is
+v1.02 Huge one
+-New siege units for the Natives that works like the trebuchet of AoE2.
+brief explanation:
+Create the mobile version of the unit->Build the Siege unit->Mobile unit dies when the siege unit is build and back Siege unit trains a transform unit->Siege unit dies when the transform unit is created->transform unit transforms into the Mobile unit. Another thing is that you can choose between 3 different types of ammunition: Normal,Trees,Herdables.
+Normal ammo gives the same bonuses as siege units have.
+Trees ammo is average vs units and buildings and has a shockwave effect that does not stun.
+Herdable ammo is good against units bad against buildings.
+Their range is quite small now but that will be changed in the future and we might even go back to 1-2 different types of ammunition but we'll see. They're still using placeholder models (OP landboats) but you can still distinguish them by their projectiles and names.
+
+-New models
+-Some data adjustments
+-Reduced the filesize a bit
+v1.021 Added the .dll file and some new models
+v1.022 Added some more models and textures fixed the invisible siege units (land#2-15)
+v1.023 Added variations to the Inca units and some balance attempts
+v1.03 Many things are added to replace older stuff but almost nothing is removed yet.
+-Favor generation might change from favor trees to human sacrifice and eventually animal sacrifice. now both ways are available.
+-Veteran Eagle Warrior got removed and will be replaced by a age 4 unique unit which is the Apusquispay for the Incas. The apusquispay will be a melee unit with a longer range than normal melee units have.
+-Sea Serpent got disabled and replaced by the water giant. The sea serpent might return later as a water MU instead of a semi-hybrid one.The water giant is not final neither.
+-Thunderbird got added as an age 3 MU, its not close to being done tho.
+-Frog Warrior (known as Aglebemu and is displayed in the minor god chac portrait) got added as an age 3 MU has some animations and some textures with a nice effect. (old pc wrecker)
+-Stone Coat got added as an age 4 MU, eventually it will be able to eat humans and grow in strength but for now its a cyclop with a stone texture^^.
+v1.031 Some godselection improvements
+v1.032 Improvements and some new things
+-The Native Land siege units should work better now
+-Reduced the lagg caused by the water giants and gave them a cool ability
+-changed some Native gp data.
+-Added a new model and textures for the training grounds.
+v1.033 bunch of fixes and added some things
+-Added a new gp for Pachamama. still lacks a death animation.
+-fixed the herdable los
+-favor trees might not be removed but they will be reworked for sure.
+v1.034 FIXED THE AI a bit and some other stuff. Hopefully voobly accepts it!
+-UI Completed (Credits to Nottud, esanta)
+-Fullscreen Rainfall added (Terrible failure so far ^^)
+-added new language pack that works like an addon and can be installed manually without changing anything about the normal game.
+V1.035 some fixes and probably a lot of new/old problems too.
+-Added an age 1 settlement model for the Natives.
+-Added new models and textures for the Shaman unit.
+-Changed the data back so the settlement problems should be fixed now.
+-AI can start a game but then does not know how to continue.
+-The ThunderBird has a new model with an animated texture. The animated texture will be improved later because this was just to test it.
+-Changed some strings in the Xpacklanguage.dll and added the Language_The Natives.dll.
+v1.036 Test version...
+
+No other problems so far.
