@@ -1,0 +1,768 @@
+<?xml version = "1.0"?>
+<trigger version="2">
+
+<Conditions>
+
+   <Condition name="$$22289$$Always">
+      <Expression>true</Expression>
+   </Condition>
+
+</Conditions>
+
+<Effects>
+
+   <Effect name="$$22355$$SetIdleProcessing">
+      <Param name="IdleProc" dispName="$$22356$$Process Idle:" varType="bool">true</Param>
+      <Command>trSetUnitIdleProcessing(%IdleProc%);</Command>
+   </Effect>
+
+<Effect name="v 1 Target Protounit Query Start">
+		<Param name="DstObject" dispName="$$22300$$Center Unit" VarType="unit">default</Param>
+		<Param name="Dst" dispName="Radius (-1 for entire map)" VarType="float">10</Param>
+        <Param name="PlayerID" dispName="Player (99 for ALL)" VarType="string">1</Param>
+        <Param name="ProtoName" dispName="Protounit (optional)" varType="protounit">Unit</Param>
+		<Param name="ClassID" dispName="Unit Type ID (optional) " varType="string">-1</Param> //With the trigger loader, you can choose unit classes such as cUnitTypeAbstractArcher
+		<Param name="actionid" dispName="Action" varType="string">-1</Param>
+		<Param name="unitstate" dispName="State (2 alive, 4 dead, 255 any)" varType = "string">2</Param>
+		<Command>for(Qid=0;>1) {}</Command> //creating variables
+		<Command>for(UnitID=0;>1) {}</Command>
+		<Command>for(maxPlayer=0;>1) {}</Command>
+		<Command>for(minPlayer=0;>1) {}</Command>
+		<Command>for(TempORVar=0;>1) {}</Command>
+		<Command>for(finalORResult=0;>1) {}</Command>
+		<Command>for(unitTypeID=0;>1) {}</Command>
+		<Command>for(pid=0;>1) {}</Command>
+		<Command>for(oldPlayer=xsGetContextPlayer();>99) {}</Command> //saving original player context
+ 		<Command>if(%PlayerID%==99) {</Command> //define player limits
+			<Command>maxPlayer = 12;</Command>
+			<Command>minPlayer = 1;</Command>
+		<Command>} else {</Command>
+			<Command>maxPlayer = %PlayerID%;</Command> //if a player is chosen min = max = player
+			<Command>minPlayer = %PlayerID%;</Command>
+		<Command>}</Command>
+		<Command>if(%ClassID%==-1) {</Command>
+			<Command>unitTypeID=kbGetProtoUnitID("%ProtoName%");</Command>
+		<Command>} else {</Command>
+			<Command>unitTypeID=%ClassID%;</Command>
+		<Command>}</Command>
+		<Command>for(pid1=maxPlayer;>minPlayer-1) {</Command> //loop runs either from 12 to 1, or from player id to player id.
+			<Command>pid=pid1;</Command>
+			<Command>xsSetContextPlayer(pid);</Command>
+			<Command>kbLookAtAllUnitsOnMap();</Command>
+			<Command>Qid = kbUnitQueryCreate("tp_query_convarea_1");</Command>
+			<Command>kbUnitQuerySetPlayerID(Qid, pid);</Command>
+			<Command>kbUnitQuerySetUnitType(Qid,unitTypeID);</Command>
+			<Command>kbUnitQuerySetState(Qid, 1*%unitstate%);</Command>
+			<Command>if(%actionid%!=-1) kbUnitQuerySetActionType(Qid, 1*%actionid%);</Command> //define action only if you chose an action
+			<Command>if(%Dst% >= 0) {</Command> //define location only if radius is positive
+				<Command>trUnitSelectClear();</Command>
+				<Command>trUnitSelect("%DstObject%");</Command>
+				<Command>if(trUnitAlive()==false) {break;}</Command>
+				<Command>kbUnitQuerySetPosition(Qid, kbGetBlockPosition("%DstObject%"));</Command>
+				<Command>kbUnitQuerySetMaximumDistance(Qid, %Dst%);</Command>
+			<Command>}</Command>
+			<Command>kbUnitQuerySetAscendingSort(Qid, true);</Command>
+			<Command>for(j=kbUnitQueryExecute(Qid)-1;>-1){ </Command> //loop from number of units found by query down to zero
+				<Command>trUnitSelectClear();</Command>
+				<Command>UnitID = kbUnitQueryGetResult(Qid,j);</Command> //Saves the id of current unit in UnitID variable, which can be used in other effects in the same trigger.
+				<Command>trUnitSelectByID(UnitID);</Command> //Selects the unit.
+				<Command>if(UnitID==kbGetBlockID("%DstObject%")) {</Command> //If the unit is the same as the centre unit, skip back to the top of the loop and go to next unit.
+					<Command>continue;</Command>
+				<Command>}</Command>
+	</Effect>
+	
+
+	<Effect name="v 1 Target Protounit Query Start (Centre Army)">
+		<Param name="SrcArmy" dispName="Army" VarType="group">default</Param>
+		<Param name="Dst" dispName="Radius (-1 for entire map)" VarType="float">10</Param>
+        <Param name="PlayerID" dispName="Player (99 for ALL)" VarType="string">1</Param>
+        <Param name="ProtoName" dispName="Protounit (optional)" varType="protounit">Unit</Param>
+		<Param name="ClassID" dispName="Unit Type ID (optional) " varType="string">-1</Param> //With the trigger loader, you can choose unit classes such as cUnitTypeAbstractArcher
+		<Param name="actionid" dispName="Action" varType="string">-1</Param>
+		<Param name="unitstate" dispName="State (2 alive, 4 dead, 255 any)" varType = "string">2</Param>
+		<Command>for(Qid=0;>1) {}</Command> //creating variables
+		<Command>for(UnitID=0;>1) {}</Command>
+		<Command>for(maxPlayer=0;>1) {}</Command>
+		<Command>for(minPlayer=0;>1) {}</Command>
+		<Command>for(TempORVar=0;>1) {}</Command>
+		<Command>for(finalORResult=0;>1) {}</Command>
+		<Command>for(unitTypeID=0;>1) {}</Command>
+		<Command>for(pid=0;>1) {}</Command>
+		<Command>for(oldPlayer=xsGetContextPlayer();>99) {}</Command> //saving original player context
+	    <Command>for(armyPid=xsVectorGetX(vector(%SrcArmy%,0));>armyPid+1){} for(Aid=xsVectorGetY(vector(%SrcArmy%,0));>Aid+1){}</Command>
+	   <Command>xsSetContextPlayer(armyPid); for(auid = kbArmyGetUnitID(Aid,0);>auid+1) {}</Command>
+	   <Command>if(%PlayerID%==99) {</Command> //define player limits
+			<Command>maxPlayer = 12;</Command>
+			<Command>minPlayer = 1;</Command>
+		<Command>} else {</Command>
+			<Command>maxPlayer = %PlayerID%;</Command> //if a player is chosen min = max = player
+			<Command>minPlayer = %PlayerID%;</Command>
+		<Command>}</Command>
+		<Command>if(%ClassID%==-1) {</Command>
+			<Command>unitTypeID=kbGetProtoUnitID("%ProtoName%");</Command>
+		<Command>} else {</Command>
+			<Command>unitTypeID=%ClassID%;</Command>
+		<Command>}</Command>
+		<Command>for(pid1=maxPlayer;>minPlayer-1) {</Command> //loop runs either from 12 to 1, or from player id to player id.
+			<Command>pid=pid1;</Command>
+			<Command>xsSetContextPlayer(pid);</Command>
+			<Command>kbLookAtAllUnitsOnMap();</Command>
+			<Command>Qid = kbUnitQueryCreate("tp_query_convarea_1");</Command>
+			<Command>kbUnitQuerySetPlayerID(Qid, pid);</Command>
+			<Command>kbUnitQuerySetUnitType(Qid,unitTypeID);</Command>
+			<Command>kbUnitQuerySetState(Qid, 1*%unitstate%);</Command>
+			<Command>if(%actionid%!=-1) kbUnitQuerySetActionType(Qid, 1*%actionid%);</Command> //define action only if you chose an action
+			<Command>if(%Dst% >= 0) {</Command> //define location only if radius is positive
+				<Command>trArmySelect("%SrcArmy%");</Command>
+				<Command>if(trUnitAlive()==false) {break;}</Command>
+				<Command>kbUnitQuerySetPosition(Qid, kbUnitGetPosition(auid));</Command>
+				<Command>kbUnitQuerySetMaximumDistance(Qid, %Dst%);</Command>
+			<Command>}</Command>
+			<Command>kbUnitQuerySetAscendingSort(Qid, true);</Command>
+			<Command>for(j=kbUnitQueryExecute(Qid)-1;>-1){ </Command> //loop from number of units found by query down to zero
+				<Command>trUnitSelectClear();</Command>
+				<Command>UnitID = kbUnitQueryGetResult(Qid,j);</Command> //Saves the id of current unit in UnitID variable, which can be used in other effects in the same trigger.
+				<Command>trUnitSelectByID(UnitID);</Command> //Selects the unit.
+				<Command>if(UnitID==auid) {</Command> //If the unit is the same as the centre unit, skip back to the top of the loop and go to next unit.
+					<Command>continue;</Command>
+				<Command>}</Command>
+	</Effect>
+	
+	<Effect name="v Secondary Target Protounit Query Start">
+		<Param name="Dst" dispName="Radius" VarType="string">10</Param>
+        <Param name="PlayerID" dispName="Player (99 for ALL)" VarType="string">1</Param>
+        <Param name="ProtoName" dispName="Protounit (blank for any)" varType="protounit">Unit</Param>
+		<Param name="ClassID" dispName="Unit Type ID (optional) " varType="string">-1</Param> //With the trigger loader, you can choose unit classes such as cUnitTypeAbstractArcher
+		<Param name="actionid" dispName="Action" varType="string">-1</Param>
+		<Param name="unitstate" dispName="State (2 alive, 4 dead, 255 any)" varType = "string">2</Param>
+        <Command>for(Qid2=0;>1) {}</Command> //creating variables
+		<Command>for(UnitIDold=0;>1) {}</Command>
+		<Command>for(pidold=0;>1) {}</Command>
+		<Command>for(maxPlayer2=0;>1) {}</Command>
+		<Command>for(minPlayer2=0;>1) {}</Command>
+		<Command>for(unitTypeID2=0;>1) {}</Command>
+		<Command>for(oldPlayer2=xsGetContextPlayer();>99) {}</Command> //saving original player context
+		<Command>UnitIDold = UnitID;</Command> //Save old Unit ID in order to revert it back at the end
+		<Command>pidold = pid;</Command>
+ 		<Command>if(%PlayerID%==99) {</Command> //define player limits
+			<Command>maxPlayer2 = 12;</Command>
+			<Command>minPlayer2 = 1;</Command>
+		<Command>} else {</Command>
+			<Command>maxPlayer2 = %PlayerID%;</Command> //if a player is chosen min = max = player
+			<Command>minPlayer2 = %PlayerID%;</Command>
+		<Command>}</Command>
+		<Command>if(%ClassID%==-1) {</Command>
+			<Command>unitTypeID2=kbGetProtoUnitID("%ProtoName%");</Command>
+		<Command>} else {</Command>
+			<Command>unitTypeID2=%ClassID%;</Command>
+		<Command>}</Command>
+		<Command>for(pid2=maxPlayer2;>minPlayer2-1) {</Command> //loop runs either from 12 to 1, or from player id to player id.
+			<Command>pid=pid2;</Command>
+			<Command>xsSetContextPlayer(pid);</Command>
+			<Command>kbLookAtAllUnitsOnMap();</Command>
+			<Command>Qid2 = kbUnitQueryCreate("tp_query_convarea_2");</Command>
+			<Command>kbUnitQuerySetPlayerID(Qid2, pid);</Command>
+			<Command>kbUnitQuerySetUnitType(Qid2,unitTypeID2);</Command>
+			<Command>kbUnitQuerySetState(Qid2, 1*%unitstate%);</Command>
+			<Command>if(%actionid%!=-1) kbUnitQuerySetActionType(Qid2, 1*%actionid%);</Command> //define action only if you chose an action
+			<Command>kbUnitQuerySetPosition(Qid2, kbUnitGetPosition(UnitIDold));</Command>
+			<Command>kbUnitQuerySetMaximumDistance(Qid2, %Dst%);</Command>
+			<Command>kbUnitQuerySetAscendingSort(Qid2, true);</Command>
+			<Command>for(j2=kbUnitQueryExecute(Qid2)-1;>-1){ </Command> //loop from number of units found by query down to zero
+				<Command>trUnitSelectClear();</Command>
+				<Command>UnitID = kbUnitQueryGetResult(Qid2,j2);</Command> //Saves the id of current unit in UnitID variable, which can be used in other effects in the same trigger.
+				<Command>trUnitSelectByID(UnitID);</Command> //Selects the unit.
+	</Effect>
+	
+	<Effect name="v Secondary Target Protounit Query End">
+		<Command>}}</Command>
+		<Command>UnitID = UnitIDold;</Command>//Return UnitID to orginal value
+		<Command>pid = pidold;</Command>
+		<Command>trUnitSelectClear();</Command>
+		<Command>trUnitSelectByID(UnitID);</Command>//Reselect original unit
+		<Command>xsSetContextPlayer(oldPlayer2);</Command>//Restore player context to original player
+	</Effect>
+	
+    <Effect name="v Condition Else">
+           <Command>} else {</Command>
+    </Effect>
+	
+    <Effect name="v Condition OR">
+	   <Param name="first" dispName="First OR?" varType="bool">true</Param>
+				<Command>TempORVar = 1;</Command>
+		   <Command>}</Command>
+		   <Command>if(%first%) {</Command>
+				<Command>finalORResult=0;</Command>
+		   <Command>}</Command>
+		   <Command>finalORResult=finalORResult+TempORVar;</Command>
+		   <Command>TempORVar = 0;</Command>
+    </Effect>
+	
+	<Effect name="v Condition OR last">
+	    <Param name="N" dispName="Minimum number of Trues" varType="string">1</Param>
+				<Command>TempORVar = 1;</Command>
+		   <Command>}</Command>
+		   <Command>finalORResult=finalORResult+TempORVar;</Command>
+		   <Command>TempORVar = 0;</Command>
+		   <Command><![CDATA[if(finalORResult >= %N%) {]]></Command>
+				<Command>finalORResult=0;</Command>
+    </Effect>
+	
+<Effect name = "v Condition Diplomacy towards Unit">
+		<Param name="Status" dispName="$$22340$$Status" varType="alliance">ally</Param>
+		<Param name="PlayerID" dispName="Player" varType="string">1</Param>
+		<Command>for(result=0;>1) {}</Command>
+		<Command>if(%PlayerID%==pid) { </Command>
+			<Command>if("%Status%"=="ally") { result = 1;</Command>
+			<Command>} else {result = 0;}</Command>
+			<Command>} else {</Command>
+			<Command>if(trPlayerGetDiplomacy(%PlayerID%,pid) == "%Status%") { result = 1;}}</Command>
+		<Command>if(result==1) {</Command>
+</Effect>
+	
+<Effect name = "v Condition Diplomacy of Unit">
+		<Param name="PlayerID" dispName="Player" varType="string">1</Param>
+		<Param name="Status" dispName="$$22340$$Status" varType="alliance">ally</Param>
+		<Command>for(result=0;>1) {}</Command>
+		<Command>if(%PlayerID%==pid) { </Command>
+			<Command>if("%Status%"=="ally") { result = 1;</Command>
+			<Command>} else {result = 0;}</Command>
+			<Command>} else {</Command>
+			<Command>if(trPlayerGetDiplomacy(pid,%PlayerID%) == "%Status%") { result = 1;}}</Command>
+		<Command>if(result==1) {</Command>
+</Effect>
+	
+<Effect name="v Condition Distance to Unit">
+      <Param name="DstObject" dispName="Unit" varType="unit">default</Param>
+	  <Param name="Op" dispName="Operator" varType="operator"><![CDATA[<=]]></Param>
+	  <Param name="Dist" dispName="Distance" varType="string">10</Param>
+	  <Command>if(trUnitDistanceToUnit("%DstObject%") %Op% %Dist%){</Command>
+</Effect>
+   
+<Effect name="v Condition - is distance">
+      <Param name="Dist" dispName="Distance" varType="long">10</Param>
+      <Param name="DstObject" dispName="Unit" varType="unit">default</Param>
+      <Command>if(%Dist% >= trUnitDistanceToUnit("%DstObject%")){</Command>
+</Effect>
+   
+<Effect name="v Condition Distance To Army">
+        <Param name="ArmyT" dispName="Army Target" VarType="group">0,0</Param>
+        <Param name="Op" dispName="$$22297$$Operator" VarType="operator">==</Param>
+        <Param name="Dst" dispName="$$22298$$Distance" VarType="string">0</Param>
+           <Command>for(TAid=0; >1){} TAid = xsVectorGetY(vector(%ArmyT%,0));</Command>
+		   <Command>for(d2aresult=0;>1){}</Command>
+           <Command>xsSetContextPlayer(xsVectorGetX(vector(%ArmyT%,0)));</Command>
+	   <Command>if(trUnitDistanceToPoint(xsVectorGetX(kbArmyGetLocation(TAid)),0, xsVectorGetZ(kbArmyGetLocation(TAid))) %Op% %Dst%) {</Command>
+	   <Command>d2aresult = 1;}</Command>
+	   <Command>xsSetContextPlayer(pid);</Command>
+	   <Command>if(d2aresult==1) {</Command>
+</Effect>
+   
+<Effect name="v Condition Ignore invalid unit">
+		<Command>for(result=0;>1) {}</Command>
+		<Command>if(xsVectorGetX(kbUnitGetPosition(UnitID)) == -1) {</Command>
+			<Command>if(xsVectorGetY(kbUnitGetPosition(UnitID)) == -1) {</Command>
+				<Command>if(xsVectorGetZ(kbUnitGetPosition(UnitID)) == -1) {result = 1;} }}</Command>
+		<Command>if(result != 1) {</Command>
+</Effect>
+	
+<Effect name="v Condition - is alive">
+      <Command>if(trUnitAlive()==true){</Command>
+</Effect>
+
+<Effect name="v Condition - is dead">
+      <Command>if(trUnitDead()==true){</Command>
+</Effect>
+
+<Effect name="v Condition -  is garrisoned">
+      <Param name="Op" dispName="$$22297$$Operator" VarType="operator">==</Param>
+      <Param name="Count" dispName="$$22321$$Number" VarType="long">1</Param>
+      <Command>if(trUnitGetContained() %Op% %Count%){</Command>
+</Effect>
+
+<Effect name="v Condition - is garrisoned in">
+       <Param name="UnitType" dispName="$$23937$$Container Type" varType="string">All</Param>
+      <Command>if(trUnitGetIsContained("%UnitType%")){</Command>
+</Effect>
+	
+<Effect name="v Condition - is owned">
+      <Param name="Player" dispName="Player" varType="player">0</Param>
+      <Command>if(trUnitIsOwnedBy(%Player%)){</Command>
+</Effect>
+
+		
+<Effect name = "v Condition Percent Complete">
+		<Param name = "Operator" dispName = "Operator" varType = "operator">==</Param>
+		<Param name = "Percent" dispName = "Percent" varType = "string">100</Param>
+			<Command>if(trUnitPercentComplete() %Operator% %Percent%){</Command>
+</Effect>
+	
+<Effect name = "v Condition Percent Damaged">
+	  <Param name="Op" dispName="$$22297$$Operator" VarType="operator">==</Param>
+	  <Param name="Percent" dispName="$$22315$$Percent" VarType="string">100</Param>
+	  			<Command>if(trUnitPercentDamaged() %Op% %Percent%) {</Command>
+</Effect>
+
+<Effect name = "v Condition Random unit">
+	<Param name="NumberUnits" dispName="Number of Random Units" varType="string">1</Param>
+	<Param name="ID" dispName="ID tag (if multiple in same trigger)" varType="string">0</Param>
+		<Command>for(randomresult=0;>1) {}</Command>
+		<Command>if(kbUnitQueryExecute(Qid)-1 > %NumberUnits%) {</Command>
+			<Command>if(j == kbUnitQueryExecute(Qid)-1) {</Command>
+				<Command>for(iRand = %NumberUnits%;>0) {</Command>
+					<Command>trQuestVarSetFromRand("randomrandomrandom"+%ID%+iRand,0,kbUnitQueryExecute(Qid)-1,true);}</Command>
+			<Command>}</Command>
+			<Command>for(iRand = %NumberUnits%;>0) {</Command>
+				<Command>if(j == trQuestVarGet("randomrandomrandom"+%ID%+iRand)) {</Command>
+					<Command>randomresult = 1;</Command>
+			<Command>}}</Command>
+		<Command>} else {</Command>
+			<Command>randomresult=1;</Command>
+		<Command>}</Command>
+		<Command>if(randomresult ==1 ) {</Command>	
+</Effect>
+
+<Effect name = "v Condition Unit Selected">
+ 	 <Param name = "Player" dispName = "Selected by Player (-1 for any)" varType = "string">-1</Param>
+  	 <Command>for(result=0;>1) {} for (fpp=0;>1) {}</Command>
+   	<Command>if(%Player% > -1) {fpp = %Player%;</Command>
+   	<Command>} else { fpp=trCurrentPlayer();}</Command>
+   	<Command>if(trCurrentPlayer()==fpp) {</Command>
+   	<Command>if(trUnitIsSelected()) { result = 1;}}</Command>
+   	<Command>if(result==1) {</Command>
+</Effect>
+	
+<Effect name="v Condition Unit Type">
+    <Param name="Type" dispName="Protounit" VarType="protounit">Anubite</Param>
+	<Param name="ClassID" dispName="Unit Type ID (optional and not much use) " varType="string">-1</Param> //With the trigger loader, you can choose unit classes such as cUnitTypeAbstractArcher
+	<Command>for(unitClassID=0;>1){} </Command>
+	<Command>if(%ClassID%==-1) {</Command>
+	<Command>unitClassID=kbGetProtoUnitID("%Type%");</Command>
+	<Command>} else {</Command>
+	<Command>unitClassID=%ClassID%;</Command>
+	<Command>}</Command>
+    <Command>if(kbGetUnitBaseTypeID(UnitID) == unitClassID){</Command>
+</Effect>
+
+<Effect name="v Condition Unit Action">  
+		<Param name="ActionID" dispName="Action ID" VarType="string">9</Param>
+			<Command>for(result=0;>1) {}</Command>
+			<Command>result = %ActionID%;</Command>
+			<Command>xsSetContextPlayer(pid);</Command>      
+			<Command>if(kbUnitGetActionType(UnitID) == result){</Command>
+</Effect>
+	
+<Effect name ="v Condition Unit Current HP">
+		<Param name = "Operator" dispName = "Operator" varType = "operator">==</Param>
+		<Param name = "HP" dispName = "Hitpoints" varType = "string">0</Param>
+		<Command>if(kbUnitGetCurrentHitpoints(UnitID) %Operator% %HP%) {</Command>
+</Effect>
+
+<Effect name="v Condition Units in Area">
+		<Param name="PlayerID" dispName="$$22301$$Player" VarType="player">0</Param>
+		<Param name="ProtoName" dispName="Protounit" VarType="protounit">Unit</Param>
+		<Param name="Dist" dispName="$$22303$$Radius" VarType="float">10</Param>
+		<Param name="Op" dispName="$$22297$$Operator" VarType="operator">==</Param>
+		<Param name="Count" dispName="$$22304$$Count" VarType="string">1</Param>
+		   <Command>for(QidUIA=0;>1){}</Command>
+		   <Command>for(oldPlayerUIA=xsGetContextPlayer();>99){}</Command>
+		   <Command>for(resultUIA=0;>1) {}</Command>
+		   <Command>xsSetContextPlayer(%PlayerID%); kbLookAtAllUnitsOnMap();</Command>
+		   <Command>QidUIA=kbUnitQueryCreate("QUIA_%PlayerID%_%ProtoName%");</Command>
+		   <Command>kbUnitQuerySetPlayerID(QidUIA, %PlayerID%, true);</Command>
+		   <Command>kbUnitQuerySetUnitType(QidUIA, kbGetProtoUnitID("%ProtoName%"));</Command>
+		   <Command>kbUnitQuerySetPosition(QidUIA, kbUnitGetPosition(UnitID));</Command>
+		   <Command>kbUnitQuerySetMaximumDistance(QidUIA, %Dist%);</Command>
+		   <Command>kbUnitQuerySetAscendingSort(QidUIA, true);</Command>
+		   <Command>kbUnitQuerySetState(QidUIA,2);</Command>
+		   <Command>resultUIA=kbUnitQueryExecute(QidUIA);</Command>
+		   <Command>xsSetContextPlayer(oldPlayerUIA);</Command>
+		   <Command>if(resultUIA  %Op% %Count%) {</Command>
+</Effect>
+   
+<Condition name="v Condition in User Defined Area">
+         <Param name="Location" dispName="" varType="area">0,0,0</Param>
+         <Param name="Location2" dispName="" varType="area">0,0,0</Param>
+           <Command>for(result=0;>1){} for(q=0;>1){} for(w=0;>1){} for(a=0;>1){} for(s=0;>1){}</Command>
+           <Command>for(x=0;>1){} for(y=0;>1){} for(Qid=0;>1){}</Command>
+           <Command>q=xsVectorGetX(vector(%Location%));w=xsVectorGetZ(vector(%Location%));</Command>
+           <Command>a=xsVectorGetX(vector(%Location2%));s=xsVectorGetZ(vector(%Location2%));</Command>
+           <Command>x=xsVectorGetX(kbUnitGetPosition(UnitID));y=xsVectorGetZ(kbUnitGetPosition(UnitID));</Command>
+           <Command>if(((w>=y)!=true||(y>=s)!=true||(x>=q)!=true||(a>=x)!=true)!=true){</Command>
+</Condition>
+   
+<Effect name="v Condition Unit Height">
+	<Param name="Op" dispName="Operator" VarType="operator">==</Param>
+	<Param name="Height" dispName="Height" VarType="string">0</Param>
+    <Command>if(xsVectorGetY(kbUnitGetPosition(UnitID)) %Op% %Height%){</Command>
+</Effect>
+
+<Effect name="v Army Add Unit">
+	 <Param name="army" dispName="$$22348$$Army" VarType="group">0,0</Param>
+	   <Command>for(Aid=xsVectorGetY(vector(%army%,0));>Aid+1){}</Command>
+	   <Command>kbArmyAddUnit(Aid,UnitID);</Command>
+</Effect>
+   
+<Effect name="v Army Deploy to Unit">
+      <Param name="SrcArmy" dispName="$$22348$$Army" VarType="group">default</Param>
+      <Param name="ProtoName" dispName="$$22434$$ProtoName" varType="protounit">Villager</Param>
+      <Param name="Count"  dispName="$$22435$$Count" varType="string">0</Param>
+	 
+      <Param name="Heading"  dispName="$$22432$$Heading" varType="string">0</Param>
+      <Param name="Clear" dispName="$$22464$$Clear Existing Units:" varType="bool">true</Param>
+	  <Param name ="Overlap" dispName="Allow unit overlap" varType="bool">false</Param>
+        <Command>trQuestVarSet("zzza",xsVectorGetX(kbUnitGetPosition(UnitID)));</Command>
+        <Command>trQuestVarSet("zzzb",xsVectorGetY(kbUnitGetPosition(UnitID)));</Command>
+        <Command>trQuestVarSet("zzzc",xsVectorGetZ(kbUnitGetPosition(UnitID)));</Command>
+		<Command>if(%Overlap%) {</Command>
+			<Command>trArmyDispatch("%SrcArmy%", "Pegasus", %Count%, trQuestVarGet("zzza"),trQuestVarGet("zzzb"),trQuestVarGet("zzzc"), %Heading%, %Clear%);</Command>
+			<Command>trArmySelect("%SrcArmy%");</Command>
+			<Command>trUnitChangeProtoUnit("Cinematic Block");</Command>
+			<Command>trUnitChangeProtoUnit("%ProtoName%");</Command>
+			<Command>trUnitSelectClear();</Command>
+			<Command>trUnitSelectByID(UnitID);</Command>
+		<Command>} else {</Command>
+			<Command>trArmyDispatch("%SrcArmy%", "%ProtoName%", %Count%, trQuestVarGet("zzza"),trQuestVarGet("zzzb"),trQuestVarGet("zzzc"), %Heading%, %Clear%);</Command>
+		<Command>}</Command>
+</Effect>
+   
+<Effect name="v Camera Cut to Unit">
+		<Command>uiLookAtUnit(UnitID);</Command>
+</Effect>
+
+<Effect name="v Change Unit Type">
+      	  <Param name="ProtoUnit" dispName="$$22449$$ProtoUnit" varType="protounit">Villager</Param>
+      <Command>trUnitChangeProtoUnit("%ProtoUnit%");</Command>
+</Effect>
+
+<Effect name="v Convert">
+        <Param name="PlayerID" dispName="$$22301$$Player" varType="player">0</Param>
+      <Command>trUnitConvert(%PlayerID%);</Command>
+</Effect>
+	
+<Effect name="v Damage Unit SP (vanilla)">
+		<Param name="Damage" dispName="Damage" varType="string">50</Param>
+   		<Command>trUnitSetHP(kbUnitGetCurrentHitpoints(UnitID)-%Damage%);</Command>
+</Effect>
+   
+<Effect name="v Garrison">
+      <Param name="DstObject" dispName="$$22296$$Target Unit" varType="unit">default</Param>
+      <Command>trUnitGarrison("%DstObject%",%EventID%);</Command>
+</Effect>
+		
+<Effect name="v Flare Minimap on Unit">
+         <Param name="PlayerID" dispName="$$22301$$Player" varType="player">0</Param>
+         <Param name="Duration" dispName="$$20510$$Duration" varType="float">1.0</Param>
+         <Param name="Flash" dispName="$$22492$$Flash" varType="bool">true</Param>
+         <Command>trMinimapFlare(%PlayerID%, %Duration%, kbUnitGetPosition(UnitID), %Flash%);</Command>
+</Effect>
+   
+<Effect name="v Heading Towards Unit TL">
+	<Param name="TrgUnit" dispName="Target Unit" varType="unit">default</Param>
+	<Param name="Shift" dispName="Angle Offset" varType="string">0</Param>
+		<Command>trUnitSetHeading(%Shift%+Math_atan2(xsVectorGetX(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetZ(kbUnitGetPosition(UnitID)))*180.0/PI);</Command>
+</Effect>
+   
+<Effect name="v Move to Random Location">
+		<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+		<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+		<Command>trQuestVarSetFromRand("MapXRandom", 0, kbGetMapXSize(), true);</Command>
+		<Command>trQuestVarSetFromRand("MapZRandom", 0, kbGetMapZSize(), true);</Command>
+		<Command>trUnitMoveToPoint(trQuestVarGet("MapXRandom"),0,trQuestVarGet("MapZRandom"), %EventID%, %AttackMove%);</Command>
+</Effect>
+	
+<Effect name="v Move Random Direction TL">
+	<Param name="Dst" dispName="Distance" varType="string">10</Param>
+	<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+	<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+	<Command>trQuestVarSetFromRand("RandomDir", 0, 360, true);</Command>
+	<Command>trVectorQuestVarSet("SrcObjPos", kbUnitGetPosition(UnitID));</Command>
+	<Command>trVectorQuestVarSet("MoveDiff", xsVectorSet(1.0*%Dst%*Math_sin(trQuestVarGet("RandomDir")*PI/180.0), 0, 1.0*%Dst%*Math_cos(trQuestVarGet("RandomDir")*PI/180.0)));</Command>
+	<Command>trVectorQuestVarSet("NewObjPos", trVectorQuestVarGet("SrcObjPos") + trVectorQuestVarGet("MoveDiff"));</Command>
+	<Command>trUnitMoveToPoint(trVectorQuestVarGetX("NewObjPos"),trVectorQuestVarGetY("NewObjPos"),trVectorQuestVarGetZ("NewObjPos"),%EventID%,%AttackMove%);</Command>
+</Effect>
+
+<Effect name="v Move Away from Unit TL">
+	<Param name="TrgUnit" dispName="Center Unit" varType="unit">default</Param>
+	<Param name="Dst" dispName="Distance" varType="string">10</Param>
+	<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+	<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+	<Command>trQuestVarSet("TPMADir",180+Math_atan2(xsVectorGetX(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetZ(kbUnitGetPosition(UnitID)))*180.0/PI);</Command>
+	<Command>trVectorQuestVarSet("SrcObjPos", kbUnitGetPosition(UnitID));</Command>
+	<Command>trVectorQuestVarSet("MoveDiff", xsVectorSet(1.0*%Dst%*Math_sin(trQuestVarGet("TPMADir")*PI/180.0), 0, 1.0*%Dst%*Math_cos(trQuestVarGet("TPMADir")*PI/180.0)));</Command>
+	<Command>trVectorQuestVarSet("NewObjPos", trVectorQuestVarGet("SrcObjPos") + trVectorQuestVarGet("MoveDiff"));</Command>
+	<Command>trUnitMoveToPoint(trVectorQuestVarGetX("NewObjPos"),trVectorQuestVarGetY("NewObjPos"),trVectorQuestVarGetZ("NewObjPos"),%EventID%,%AttackMove%);</Command>
+</Effect>
+
+<Effect name="v Move Away from Army TL">
+	<Param name="SrcArmy" dispName="Army" varType="group">default</Param>
+	<Param name="Dst" dispName="Distance" varType="string">10</Param>
+	<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+	<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+	<Command>for(armyplayerid=xsVectorGetX(vector(%SrcArmy%,0));>armyplayerid+1){} for(Aid=xsVectorGetY(vector(%SrcArmy%,0));>Aid+1){}</Command>
+	<Command>xsSetContextPlayer(armyplayerid); for(armid = kbArmyGetUnitID(Aid,0);>armid+1) {}</Command>
+	<Command>xsSetContextPlayer(pid);</Command>
+	<Command>trQuestVarSet("TPMADir",180+Math_atan2(xsVectorGetX(kbUnitGetPosition(armid))-xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbUnitGetPosition(armid))-xsVectorGetZ(kbUnitGetPosition(UnitID)))*180.0/PI);</Command>
+	<Command>trVectorQuestVarSet("SrcObjPos", kbUnitGetPosition(UnitID));</Command>
+	<Command>trVectorQuestVarSet("MoveDiff", xsVectorSet(1.0*%Dst%*Math_sin(trQuestVarGet("TPMADir")*PI/180.0), 0, 1.0*%Dst%*Math_cos(trQuestVarGet("TPMADir")*PI/180.0)));</Command>
+	<Command>trVectorQuestVarSet("NewObjPos", trVectorQuestVarGet("SrcObjPos") + trVectorQuestVarGet("MoveDiff"));</Command>
+	<Command>trUnitMoveToPoint(trVectorQuestVarGetX("NewObjPos"),trVectorQuestVarGetY("NewObjPos"),trVectorQuestVarGetZ("NewObjPos"),%EventID%,%AttackMove%);</Command>
+	<Command>xsSetContextPlayer(pid);</Command>
+</Effect>
+
+<Effect name="v Move Unit Away from Protounit TL">
+	<Param name="TrgUnit" dispName="Unit" varType="unit">default</Param>
+	<Param name="Dst" dispName="Distance" varType="string">10</Param>
+	<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+	<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+	<Command>trQuestVarSet("TPMUADir",Math_atan2(xsVectorGetX(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbGetBlockPosition("%TrgUnit%"))-xsVectorGetZ(kbUnitGetPosition(UnitID)))*180.0/PI);</Command>
+	<Command>trVectorQuestVarSet("SrcObjPos", kbUnitGetPosition(UnitID));</Command>
+	<Command>trVectorQuestVarSet("MoveDiff", xsVectorSet(1.0*%Dst%*Math_sin(trQuestVarGet("TPMUADir")*PI/180.0), 0, 1.0*%Dst%*Math_cos(trQuestVarGet("TPMUADir")*PI/180.0)));</Command>
+	<Command>trVectorQuestVarSet("NewObjPos", trVectorQuestVarGet("SrcObjPos") + trVectorQuestVarGet("MoveDiff"));</Command>
+	<Command>trUnitSelectClear();trUnitSelect("%TrgUnit%");</Command>
+	<Command>trUnitMoveToPoint(trVectorQuestVarGetX("NewObjPos"),trVectorQuestVarGetY("NewObjPos"),trVectorQuestVarGetZ("NewObjPos"),%EventID%,%AttackMove%);</Command>
+	<Command>trUnitSelectClear();trUnitSelectByID(UnitID);</Command>
+</Effect>
+
+<Effect name="v Move Army Away from Protounit TL">
+	<Param name="SrcArmy" dispName="Army" varType="group">default</Param>
+	<Param name="Dst" dispName="Distance" varType="string">10</Param>
+	<Param name="EventID" dispName="Trigger" varType="event">-1</Param>
+	<Param name="AttackMove" dispName="Attack Move" varType="bool">false</Param>
+	<Command>for(armyPid=xsVectorGetX(vector(%SrcArmy%,0));>armyPid+1){} for(Aid=xsVectorGetY(vector(%SrcArmy%,0));>Aid+1){}</Command>
+	<Command>xsSetContextPlayer(armyPid); for(armid = kbArmyGetUnitID(Aid,0);>armid+1) {}</Command>
+	<Command>trQuestVarSet("TPMUADir",Math_atan2(xsVectorGetX(kbUnitGetPosition(armid))-xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbUnitGetPosition(armid))-xsVectorGetZ(kbUnitGetPosition(UnitID)))*180.0/PI);</Command>
+	<Command>trVectorQuestVarSet("SrcObjPos", kbUnitGetPosition(UnitID));</Command>
+	<Command>trVectorQuestVarSet("MoveDiff", xsVectorSet(1.0*%Dst%*Math_sin(trQuestVarGet("TPMUADir")*PI/180.0), 0, 1.0*%Dst%*Math_cos(trQuestVarGet("TPMUADir")*PI/180.0)));</Command>
+	<Command>trVectorQuestVarSet("NewObjPos", trVectorQuestVarGet("SrcObjPos") + trVectorQuestVarGet("MoveDiff"));</Command>
+	<Command>trUnitSelectClear();trUnitSelectByID(armid);</Command>
+	<Command>trUnitMoveToPoint(trVectorQuestVarGetX("NewObjPos"),trVectorQuestVarGetY("NewObjPos"),trVectorQuestVarGetZ("NewObjPos"),%EventID%,%AttackMove%);</Command>
+	<Command>trUnitSelectClear();trUnitSelectByID(UnitID);</Command>
+</Effect>
+
+
+ <Effect name="v Move To Point">
+          <Param name="DstPoint" dispName="$$22410$$X" varType="area">0</Param>
+	  <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+      <Param name="AttackMove" dispName="$$18986$$Attack Move" varType="bool">false</Param>
+      <Command>trUnitMoveToPoint(%DstPoint%, %EventID%, %AttackMove%);</Command>
+</Effect>
+
+<Effect name="v Move to Unit">
+          <Param name="DstObject" dispName="$$22296$$Target Unit" varType="string">default</Param>
+	  <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+	  <Param name="AttackMove" dispName="$$22416$$Attack Move" varType="bool">false</Param>
+	  <Command>trUnitMoveToUnit("%DstObject%",%EventID%, %AttackMove%);</Command>
+</Effect>
+
+<Effect name="v Move Units To protounit">
+      <Param name="SrcObject" dispName="$$22295$$Source Units" varType="unit">default</Param>
+      	  <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+	  <Param name="AttackMove" dispName="$$22416$$Attack Move" varType="bool">false</Param>
+      <Command>trUnitSelectClear();</Command>
+      <Command loop="" loopParm="SrcObject">trUnitSelect("%SrcObject%");</Command>
+      <Command>trUnitMoveToUnit(xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetY(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbUnitGetPosition(UnitID)),%EventID%, %AttackMove%);</Command>
+</Effect>
+
+<Effect name="v Move Army To protounit">
+      <Param name="SrcArmy" dispName="Source Army" varType="group">default</Param>
+      	  <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+	  <Param name="AttackMove" dispName="$$22416$$Attack Move" varType="bool">false</Param>
+      <Command>trArmySelect("%SrcArmy%");</Command>
+      <Command>trUnitMoveToUnit(xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetY(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbUnitGetPosition(UnitID)),%EventID%, %AttackMove%);</Command>
+</Effect>
+
+
+<Effect name="v QV Count Units">
+	<Param name="QV" dispName="QV" varType="string">QV1</Param>
+	<Param name="nil" dispName="" varType="string">QV counts up from initial value of QV, not necessarily zero.</Param>
+	<Command>trQuestVarSet("%QV%",trQuestVarGet("%QV%")+1);</Command>
+</Effect>
+
+<Effect name="v Set Animation">
+      <Param name="AnimName" dispName="$$22360$$Animation" varType="string">default</Param>
+      <Param name="LoopIt" dispName="$$22361$$Loop:" varType="bool">false</Param>
+      <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+      <Command>trUnitSetAnimation("%AnimName%",%LoopIt%,%EventID%);</Command>
+</Effect>
+
+<Effect name="v Stop unit">
+		<Command>trUnitMoveToPoint(xsVectorGetX(kbUnitGetPosition(UnitID)),xsVectorGetY(kbUnitGetPosition(UnitID)),xsVectorGetZ(kbUnitGetPosition(UnitID)),-1,false);</Command>
+</Effect>
+	
+<Effect name="v Teleport To Unit SP">
+    <Param name="Object" dispName="Target Unit" varType="unit">default</Param>
+	<Param name="X" dispName="X" varType="string">0.0</Param>
+	<Param name="Y" dispName="Y" varType="string">0.0</Param>
+	<Param name="Z" dispName="Z" varType="string">0.0</Param>
+		<Command>trUnitTeleport(1.0*%X%+xsVectorGetX(kbGetBlockPosition("%Object%")), 1.0*%Y%+xsVectorGetY(kbGetBlockPosition("%Object%")), 1.0*%Z%+xsVectorGetZ(kbGetBlockPosition("%Object%")));</Command>
+</Effect>
+
+<Effect name="v Ungarrison">
+         <Command>trUnitEjectContained();</Command>
+</Effect>
+	
+<Effect name="v Unit Stance">
+	<Param name="Stance" dispName="Stance" varType="unitstance">Aggressive</Param>
+		<Command>trUnitSetStance("%Stance%");</Command>
+</Effect>
+	
+<Effect name="v Unit Work">
+    <Param name="DstObject" dispName="$$22296$$Target Unit" varType="unit">default</Param>
+    <Param name="EventID" dispName="$$22362$$Trigger" varType="event">-1</Param>
+      <Command>trUnitDoWorkOnUnit("%DstObject%",%EventID%);</Command>
+</Effect>
+	
+	<Effect name="v Kill">
+		<Command>trUnitDelete(false);</Command>
+	</Effect>
+	
+	<Effect name="v Invoke God Power">
+		<Param name="PlayerID" dispName="Player" varType="string">1</Param>
+		<Param name="PowerName" dispName="Power" varType="godpower">default</Param>
+		<Param name="DstPoint" dispName="Target Area (secondary)" varType="area">-1,-1,-1</Param>
+		<Param name="Count" dispName="Count" varType="string">1</Param>
+		<Command>trTechGodPower(%PlayerID%, "%PowerName%", %Count%);</Command>
+		<Command>for(gpcount=%Count%;>0) {</Command>
+			<Command>trTechInvokeGodPower(%PlayerID%, "%PowerName%", kbUnitGetPosition(UnitID), vector(%DstPoint%));</Command>
+		<Command>}</Command>
+    </Effect>
+	
+	<Effect name="v UI Select Unit">
+         <Param name="PlayerID" dispName="$$22301$$Player" varType="string">0</Param>
+		   <Command>for(FP=trCurrentPlayer();>99) {}</Command>
+		   <Command>trSetCurrentPlayerStatus(false);</Command>
+		   <Command>trBlockAllSounds(true);</Command>
+		   <Command>if(FP==%PlayerID%) {</Command>
+           <Command>trPlayerSetActive(pid);</Command>
+		   <Command>for(err=0;>1){} for(id=0;>1){} id = kbGetUnitBaseTypeID(UnitID); </Command>
+           <Command>if(trUnitIsOwnedBy(pid)){if(trUnitAlive()){</Command>
+           <Command>while(trUnitIsSelected()!=true) {err++; </Command>
+           <Command>uiFindType(kbGetProtoUnitName(id));</Command>
+           <Command>if(err>200) {break;}}}}}</Command>
+		   <Command>trPlayerSetActive(FP);</Command>
+		   <Command>trUnblockAllSounds();</Command>
+		   <Command>trSetCurrentPlayerStatus(true);</Command>
+	</Effect>
+   
+   <Effect name="v Destroy">
+      <Command>trUnitDestroy();</Command>
+   </Effect>
+
+   <Effect name="v Highlight Unit">
+      <Param name="Duration" dispName="$$22291$$Seconds" varType="float">2.5</Param>
+      <Command>trUnitHighlight(%Duration%, false);</Command>
+   </Effect>
+
+   <Effect name="v Immediate Garrison">
+      <Param name="DstObject" dispName="$$22296$$Target Unit" varType="unit">default</Param>
+      <Command>trImmediateUnitGarrison("%DstObject%");</Command>
+   </Effect>
+
+  <Effect name="v Flash Unit">
+      <Param name="Duration" dispName="$$22291$$Seconds" varType="float">2.5</Param>
+      <Command>trUnitHighlight(%Duration%, true);</Command>
+   </Effect>
+
+   <Effect name="v Change Name">
+      <Param name="NewName" dispName="$$23784$$Name" varType="stringid">Name</Param>
+      <Command>trUnitChangeName("%NewName%");</Command>
+   </Effect>
+
+   <Effect name="v Damage Unit Percent">
+       <Param name="DamagePct" dispName="$$23761$$DamagePct" varType="float">50</Param>
+      <Command>trDamageUnitPercent(%DamagePct%);</Command>
+   </Effect>
+
+   <Effect name="v Damage Unit">
+       <Param name="DamageAmt" dispName="$$23762$$DamagePct" varType="float">1</Param>
+      <Command>trDamageUnit(%DamageAmt%);</Command>
+   </Effect>
+   
+    <Effect name="v Damage Units in Area">
+      <Param name="Player" dispName="$$22301$$Player" VarType="player">0</Param>
+      <Param name="UnitType" dispName="$$22302$$Unit Type" VarType="string">Unit</Param>
+      <Param name="Dist" dispName="$$22303$$Radius" VarType="float">10</Param>
+       <Param name="Damage" dispName="$$23762$$Damage" varType="float">50</Param>
+      <Command>trDamageUnitsInArea(%Player%,"%UnitType%",%Dist%,%Damage%);</Command>
+   </Effect>
+   
+   <Effect name="v Change Units in Area">
+      <Param name="Dist" dispName="$$22303$$Radius" VarType="float">10</Param>
+       <Param name="FromPlayerID" dispName="$$22453$$From Player" varType="player">0</Param>
+       <Param name="ToPlayerID" dispName="$$22454$$To Player" varType="player">2</Param>
+       <Param name="FromType" dispName="$$23771$$FromType" varType="string">Unit</Param>
+       <Param name="ToProto" dispName="$$23772$$ToUnit" varType="protounit">Axeman</Param>
+      <Command>trUnitChangeInArea(%FromPlayerID%,%ToPlayerID%,"%FromType%","%ToProto%",%Dist%);</Command>
+   </Effect>
+	
+	<Effect name="v Conditional zEnd">
+		<Command>}</Command>
+	</Effect>
+	
+	<Effect name="v 2 Target Protounit Query End">
+		<Command>}}</Command>
+		<Command>xsSetContextPlayer(oldPlayer);</Command>
+	</Effect>
+	
+	<Effect name="Army Deploy ID array TL">
+		<Param name="SrcArmy" dispName="Army" varType="group">default</Param>
+		<Param name="ProtoName" dispName="ProtoName" varType="protounit">Villager</Param>
+		<Param name="Object" dispName="Target Unit" varType="unit">default</Param>
+		<Param name="Array" dispName="Array name" varType="string">Array 1</Param>
+		<Param name="nn" dispName=" " varType="string">Deploys army and stores unit ID in a quest array</Param>
+			<Command>for(uuiidd=0;>1) {}</Command>
+			<Command>trQuestVarSet("fhweaohpgpagowhwa", xsGetContextPlayer());</Command>
+			<Command>xsSetContextPlayer(0);</Command>
+			<Command>kbLookAtAllUnitsOnMap();</Command>
+			<Command>trArmyDispatch("%SrcArmy%", "%ProtoName%", 1, xsVectorGetX(kbGetBlockPosition(""+1*%Object%)),5.0+xsVectorGetY(kbGetBlockPosition(""+1*%Object%)),xsVectorGetZ(kbGetBlockPosition(""+1*%Object%)), 0, true);</Command>
+			<Command>xsSetContextPlayer(xsVectorGetX(vector(%SrcArmy%,-1)));</Command>
+			<Command>kbLookAtAllUnitsOnMap();</Command>
+			<Command>uuiidd=kbArmyGetUnitID(xsVectorGetY(vector(%SrcArmy%,-1)),0);</Command>
+			<Command>xsArraySetByName("%Array%", 1.0*(uuiidd)/1000.0, xsArrayGetSizeXByName("%Array%"), 1);</Command>
+			<Command>xsArrayResize(xsArrayGetID("%Array%"), xsArrayGetSizeXByName("%Array%")+1, xsArrayGetSizeYByName("%Array%"));</Command>
+			<Command>xsSetContextPlayer(trQuestVarGet("fhweaohpgpagowhwa"));</Command>
+</Effect>
+
+<Effect name="Add Unit ID to Array TL">
+	<Param name="SrcObject" dispName="Unit" varType="unit">default</Param>
+	<Param name="Array" dispName="Array name" varType="string">TitleGlows</Param>
+		<Command>for(uuiidd=0;>1) {}</Command>
+		<Command>uuiidd=kbGetBlockID("%SrcObject%");</Command>
+		<Command>xsArraySetByName("%Array%", 1.0*(uuiidd)/1000.0, xsArrayGetSizeXByName("%Array%"), 1);</Command>
+		<Command>xsArrayResize(xsArrayGetID("%Array%"), xsArrayGetSizeXByName("%Array%")+1, xsArrayGetSizeYByName("%Array%"));</Command>
+</Effect>
+
+<Effect name ="v 1b Search 1D Array Start TL">
+	<Param name="Array" dispName="Array Name" varType="string">Array 1</Param>
+	<Param name="nn" dispName=" " varType="string">Include end search effect</Param>
+	<Param name="mm" dispName=" " varType="string">Only one search per trigger</Param>
+		<Command>int UnitID=0;</Command>
+		<Command>int itertracker=0;</Command>
+		<Command>for(pid=0;>1) {}</Command>
+		<Command><![CDATA[for(j = 1; < xsArrayGetSizeXByName("%Array%")) {]]></Command>
+			<Command>while(xsArrayGetByName("%Array%",j,1)==-1){</Command>
+				<Command>xsArrayDelete(xsArrayGetID("%Array%"),j);</Command>
+			<Command>}</Command>
+			<Command>UnitID = 0.5+1.0*xsArrayGetByName("%Array%",j,1)*1000.0;</Command>
+			<Command>itertracker = j;</Command>
+			<Command>trUnitSelectByID(UnitID);</Command>
+			<Command>pid = trGetUnitOwnerByID(UnitID);</Command>
+			<Command>xsSaveAndSetContextPlayer(pid);</Command>
+			
+</Effect>
+
+<Effect name ="Clear value from array TL">
+	<Param name="Array" dispName="Array name" varType="string">Array 1</Param>
+	<Command>xsArraySetByName("%Array%", -1, itertracker,1);</Command>
+</Effect>
+
+	<Effect name="v 2b Search 1D Array End TL">
+		<Command>}</Command>
+		<Command>xsRestoreContextPlayer();</Command>
+	</Effect>
+
+</Effects>
+
+
+</trigger>
