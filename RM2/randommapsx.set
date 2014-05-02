@@ -1,0 +1,30 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<randomMaps displayNameID="22684" imagepath = "ui\ui map random 256x256" helpTextID="18609" cannotReplace="">
+	<map>xxxAcropolis</map>
+	<map>xxxAlfheim</map>
+	<map>xxxAnatolia</map>
+	<map>xxxArchipelago</map>
+	<map>xxxErebus</map>
+	<map>xxxGhost Lake</map>
+	<map>xxxHighland</map>
+   <map>xxxIslands</map>
+	<map>xxxJotunheim</map>
+	<map>xxxKing of the Hill</map>
+	<map>xxxLand Unknown</map>
+	<map>xxxMediterranean</map>
+	<map>xxxMarsh</map>
+   <map>xxxMegaopolis</map>
+	<map>xxxMidgard</map>
+	<map>xxxNomad</map>
+	<map>xxxOasis</map>
+	<map>xxxRiver Nile</map>
+	<map>xxxSavannah</map>
+	<map>xxxSea of Worms</map>
+	<map>xxxSudden Death</map>
+	<map>xxxTeam Migration</map>
+	<map>xxxTundra</map>
+	<map>xxxValley of Kings</map>
+	<map>xxxVinlandsaga</map>
+	<map>xxxWatering Hole</map>
+	<map>xxxThe Unknown</map>
+</randomMaps>

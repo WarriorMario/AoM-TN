@@ -1,0 +1,14 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<randomMaps displayNameID="New RandomMapSet" imagepath = "ui\ui map random fast 256x256" helpTextID="New RandomMapSet" cannotReplace="">
+	<map>xxxAlfheim</map>
+	<map>xxxAnatolia</map>
+	<map>xxxGhost Lake</map>
+	<map>xxxHighland</map>
+	<map>xxxMediterranean</map>
+	<map>xxxMidgard</map>
+	<map>xxxMarsh</map>
+	<map>xxxOasis</map>
+	<map>xxxSavannah</map>
+	<map>xxxTundra</map>
+	<map>xxxWatering Hole</map>
+</randomMaps>
