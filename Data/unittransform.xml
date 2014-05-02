@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<unittransforms>
+	<transform>
+		<from>Wall Long</from>
+		<to>Gate</to>
+	</transform>
+	<transform>
+		<from>Villager Norse</from>
+		<to>Ulfsark</to>
+	</transform>
+	<transform>
+		<from>Dwarf</from>
+		<to>Ulfsark</to>
+	</transform>
+	<transform>
+		<from>Villager Atlantean</from>
+		<to>Villager Atlantean Hero</to>
+	</transform>
+	<transform>
+		<from>Swordsman</from>
+		<to>Swordsman Hero</to>
+	</transform>
+	<transform>
+		<from>Trident Soldier</from>
+		<to>Trident Soldier Hero</to>
+	</transform>
+	<transform>
+		<from>Javelin Cavalry</from>
+		<to>Javelin Cavalry Hero</to>
+	</transform>
+	<transform>
+		<from>Lancer</from>
+		<to>Lancer Hero</to>
+	</transform>
+	<transform>
+		<from>Royal Guard</from>
+		<to>Royal Guard Hero</to>
+	</transform>
+	<transform>
+		<from>Maceman</from>
+		<to>Maceman Hero</to>
+	</transform>
+	<transform>
+		<from>Archer Atlantean</from>
+		<to>Archer Atlantean Hero</to>
+	</transform>
+	<transform>
+		<from>Oracle Scout</from>
+		<to>Oracle Hero</to>
+	</transform>
+	<transform>
+		<from>Strix</from>
+		<to>Strix Attack</to>
+	</transform>
+	<transform>
+		<from>Strix Attack</from>
+		<to>Strix Boost</to>
+	</transform>
+	<transform>
+		<from>Strix Boost</from>
+		<to>Strix Attack</to>
+	</transform>
+	<transform>
+		<from>AN Infantry hero</from>
+		<to>AN Archer Hero</to>
+	</transform>
+	<transform>
+		<from>AN Archer hero</from>
+		<to>AN Eagle Hero</to>
+	</transform>
+	<transform>
+		<from>Sea Serpent</from>
+		<to>Sea Serpent 2</to>
+	</transform>
+	<transform>
+		<from>Sea Serpent 2</from>
+		<to>Sea Serpent 3</to>
+	</transform>
+	<transform>
+		<from>Sea Serpent 3</from>
+		<to>Sea Serpent 2</to>
+	</transform>
+	<transform>
+		<from>Aucac Runa</from>
+		<to>Aucac Runa Sacrifice Transformation</to>
+	</transform>
+	<transform>
+		<from>Inca Slinger</from>
+		<to>Inca Slinger Sacrifice Transformation</to>
+	</transform>
+	<transform>
+		<from>Eagle Warrior</from>
+		<to>Eagle Warrior Sacrifice Transformation</to>
+	</transform>
+	<transform>
+		<from>Apusquispay</from>
+		<to>Apusquispay Sacrifice Transformation</to>
+	</transform>
+	<transform>
+		<from>Estolica</from>
+		<to>Estolica Sacrifice Transformation</to>
+	</transform>
+</unittransforms>
